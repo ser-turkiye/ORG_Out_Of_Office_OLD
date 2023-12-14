@@ -1,5 +1,8 @@
+AgentTester.properties
+
 .gradle
 build/
+agents/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
