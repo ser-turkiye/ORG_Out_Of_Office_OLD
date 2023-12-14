@@ -1,5 +1,4 @@
 AgentTester.properties
-
 .gradle
 build/
 agents/
@@ -44,8 +43,5 @@ bin/
 ### Mac OS ###
 .DS_Store
 /.idea/
-/.idea/
 /gradle/
-/log/
-/src/test/
 /log/
