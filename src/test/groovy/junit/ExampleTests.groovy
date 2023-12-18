@@ -1,9 +1,10 @@
 package junit
 
 import de.ser.doxis4.agentserver.AgentExecutionResult
-import ser.OutOfOffice
-import ser.OutOfOfficeSch
+import ser.ContactManagement
+
 import org.junit.*
+import ser.ContractorManagement
 
 class ExampleTests {
 
@@ -22,9 +23,9 @@ class ExampleTests {
     @Test
     void testForAgentResult() {
 
-        def agent = new OutOfOffice();
+        def agent = new ContractorManagement();
 
-        binding["AGENT_EVENT_OBJECT_CLIENT_ID"] = "ST0bBPM_SYS_ORG2428fed786-1795-4d88-a198-d0993a5924c6182023-12-07T08:58:24.901Z010"  //out-of-office
+        binding["AGENT_EVENT_OBJECT_CLIENT_ID"] = "SR0aPRJ_FOLDER247b5d3964-787b-43da-97e8-e93273556b89182023-12-18T20:46:29.868Z011"
 
         def result = (AgentExecutionResult)agent.execute(binding.variables)
         System.out.println(result)
