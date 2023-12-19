@@ -28,7 +28,7 @@ public class ContractorManagement extends UnifiedAgent {
             updateUnit(mainDocument.getDescriptorValue("ccmPRJCard_code"), mainDocument.getDescriptorValue("ContactShortName"),getMembersFromGVlist(mainDocument,"CCM_PARAM_CONTRACTOR-MEMBERS"));
             log.info("----OnChangeProjectCard updated Units ---for IDocument ID:--" + mainDocument.getID());
 
-            updateRole(mainDocument,"CCM_PARAM_CONTRACTOR-MEMBERS");
+            updateRole(mainDocument,"CCM_PARAM_CONTRACTOR-MEMBERS",getMembersFromGVlist(mainDocument,"CCM_PARAM_CONTRACTOR-MEMBERS"));
             log.info("----OnChangeProjectCard Updated Roles from ProjectCard ---for (ID):" + mainDocument.getID());
 
         } catch (Exception e) {
@@ -158,11 +158,11 @@ public class ContractorManagement extends UnifiedAgent {
         }
         return rtrn;
     }
-    public void updateRole(IDocument doc, String paramName) throws Exception {
+    public void updateRole(IDocument doc, String paramName, List<String> members) throws Exception {
         try {
             //IRole dccRole = getSes().getDocumentServer().getRoleByName(getSes(),Conf.RoleNames.DCCUsersRole);
             IRole prjRole = getSes().getDocumentServer().getRoleByName(getSes(),Conf.RoleNames.ContractorUsersRole);
-
+            List<String> prjRoleUserIDs = new ArrayList<>();
             if(prjRole == null){
                 throw new Exception("Exeption Caught..updateRolesFromGVList..prjRole is NULL");
             }
@@ -177,6 +177,21 @@ public class ContractorManagement extends UnifiedAgent {
                     }
                 }
             }
+
+            IUser[] prjRoleMembers = prjRole.getUserMembers();
+            if (prjRoleMembers != null) {
+                for (IUser pMember : prjRoleMembers) {
+                    prjRoleUserIDs.add(pMember.getID());
+                }
+            }
+            for (String prjUserID : prjRoleUserIDs) {
+                IUser prjRoleUser = getDocumentServer().getUser(getSes(), prjUserID);
+                if (!members.contains(prjUserID)) {
+                    removeFromRole(prjRoleUser,prjRole.getID());
+                    log.info("removed user:" + prjRoleUser.getFullName() + " from role:" + prjRole.getName());
+                }
+            }
+
         }catch (Exception e){
             throw new Exception("Exeption Caught..updateRole: " + e);
         }
@@ -299,10 +314,10 @@ public class ContractorManagement extends UnifiedAgent {
             }
             IUser cuser = user.getModifiableCopy(getSes());
             String[] newUnitIDs = rtrn.toArray(new String[0]);
-            cuser.setRoleIDs(newUnitIDs);
+            cuser.setUnitIDs(newUnitIDs);
             cuser.commit();
         }catch (Exception e){
-            throw new Exception("Exeption Caught..removeFromRole : " + e);
+            throw new Exception("Exeption Caught..removeFromUnit : " + e);
         }
     }
     public List<String> getMembersFromGVlist(IDocument doc, String paramName) throws Exception {
